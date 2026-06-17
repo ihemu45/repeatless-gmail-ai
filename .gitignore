@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+
+# production
+/build
+
+# environment — NEVER commit real secrets
+.env
+.env*.local
+.env.local
+.env.development
+.env.production
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# misc
+.DS_Store
+# macOS AppleDouble metadata (created on non-HFS volumes like exFAT)
+._*
+.AppleDouble
+.Spotlight-V100
+.Trashes
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea
+.vscode
