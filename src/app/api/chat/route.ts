@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
         user_id: session.userId,
         role: "user",
         content: message,
+        sources: [], // column is NOT NULL; batch insert won't apply the default
       },
       {
         session_id: chatSessionId,
