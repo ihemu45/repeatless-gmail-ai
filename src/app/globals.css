@@ -3,17 +3,23 @@
 @theme {
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
   --color-brand-500: #6366f1;
   --color-brand-600: #4f46e5;
   --color-brand-700: #4338ca;
 }
 
 :root {
-  --bg: #f7f7f9;
+  --bg: #f6f7fb;
   --panel: #ffffff;
-  --border: #e7e7ee;
-  --text: #1c1c28;
+  --border: #e9e9f2;
+  --border-strong: #dcdce8;
+  --text: #14141f;
   --muted: #6b7280;
+  --brand-600: #4f46e5;
+  --brand-grad-end: #7c3aed;
 }
 
 html,
@@ -22,12 +28,88 @@ body {
 }
 
 body {
-  background: var(--bg);
+  /* Soft, modern gradient backdrop with faint brand glow. */
+  background:
+    radial-gradient(1100px 560px at 8% -12%, rgba(124, 58, 237, 0.07), transparent 60%),
+    radial-gradient(900px 480px at 102% -4%, rgba(79, 70, 229, 0.07), transparent 55%),
+    var(--bg);
   color: var(--text);
   font-family:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Reusable modern surfaces & controls -------------------------------- */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.04),
+    0 14px 32px -18px rgba(16, 24, 40, 0.22);
+}
+
+/* Frosted side/column surfaces */
+.surface {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(140%) blur(10px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-600), var(--brand-grad-end));
+  color: #fff;
+  box-shadow: 0 8px 18px -8px rgba(79, 70, 229, 0.55);
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 12px 26px -8px rgba(79, 70, 229, 0.65);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  filter: grayscale(0.2) opacity(0.6);
+  box-shadow: none;
+}
+
+.btn-soft {
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.btn-soft:hover {
+  background: #fafaff;
+  border-color: var(--color-brand-300);
+}
+.btn-soft:active {
+  transform: scale(0.98);
+}
+
+/* Gradient brand text/logo accent */
+.brand-gradient {
+  background: linear-gradient(135deg, var(--brand-600), var(--brand-grad-end));
+}
+
+/* Lift-on-hover for list rows / cards */
+.lift {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+.lift:hover {
+  transform: translateY(-1px);
 }
 
 /* Thin, unobtrusive scrollbars for the panes. */
@@ -36,8 +118,11 @@ body {
   height: 8px;
 }
 .scroll-thin::-webkit-scrollbar-thumb {
-  background: #d4d4dd;
+  background: #d6d6e3;
   border-radius: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: #c3c3d6;
 }
 .scroll-thin::-webkit-scrollbar-track {
   background: transparent;
@@ -47,4 +132,19 @@ body {
 .prewrap {
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* Subtle entrance animation for chat bubbles / cards */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-rise {
+  animation: rise 0.22s ease both;
 }

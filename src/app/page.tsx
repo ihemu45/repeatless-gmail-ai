@@ -13,14 +13,14 @@ export default async function LandingPage({
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
-      <div className="w-full max-w-xl">
-        <div className="rounded-2xl border border-[var(--border)] bg-white p-10 shadow-sm">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600 text-xl">
+      <div className="w-full max-w-xl animate-rise">
+        <div className="card p-10">
+          <div className="mb-6 flex items-center gap-3.5">
+            <div className="brand-gradient flex h-12 w-12 items-center justify-center rounded-2xl text-xl shadow-[0_8px_20px_-8px_rgba(79,70,229,.6)]">
               📬
             </div>
             <div>
-              <h1 className="text-xl font-semibold">Repeatless Mail</h1>
+              <h1 className="text-xl font-semibold tracking-tight">Repeatless Mail</h1>
               <p className="text-sm text-[var(--muted)]">AI Gmail Intelligence Platform</p>
             </div>
           </div>
@@ -28,19 +28,22 @@ export default async function LandingPage({
           <p className="mb-8 text-[15px] leading-relaxed text-gray-600">
             Connect your Gmail to sync your inbox, auto-summarize and categorize every
             thread, draft replies from a one-line prompt, and ask an AI assistant questions
-            answered <span className="font-medium text-gray-800">only</span> from your own
-            emails — with sources cited.
+            answered{" "}
+            <span className="bg-gradient-to-r from-brand-600 to-violet-600 bg-clip-text font-semibold text-transparent">
+              only
+            </span>{" "}
+            from your own emails — with sources cited.
           </p>
 
           {error && (
-            <div className="mb-6 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {error}
             </div>
           )}
 
           <a
             href="/api/auth/google"
-            className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand-600 px-5 py-3 font-medium text-white transition hover:bg-brand-700"
+            className="btn-primary flex w-full items-center justify-center gap-3 rounded-xl px-5 py-3.5 font-medium"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
               <path

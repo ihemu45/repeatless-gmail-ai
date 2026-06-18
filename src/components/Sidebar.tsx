@@ -31,18 +31,18 @@ export default function Sidebar(props: SidebarProps) {
   ];
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r border-[var(--border)] bg-white">
-      <div className="flex items-center gap-2 px-4 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 text-sm">
+    <aside className="surface flex w-64 shrink-0 flex-col border-r border-[var(--border)]">
+      <div className="flex items-center gap-2.5 px-4 py-4">
+        <div className="brand-gradient flex h-9 w-9 items-center justify-center rounded-xl text-sm shadow-[0_6px_16px_-8px_rgba(79,70,229,.7)]">
           📬
         </div>
-        <span className="font-semibold">Repeatless Mail</span>
+        <span className="font-semibold tracking-tight">Repeatless Mail</span>
       </div>
 
       <div className="px-3">
         <button
           onClick={props.onCompose}
-          className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-700"
+          className="btn-primary mb-2 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
         >
           ✏️ Compose
         </button>
@@ -51,15 +51,15 @@ export default function Sidebar(props: SidebarProps) {
           className={cx(
             "mb-2 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition",
             props.chatOpen
-              ? "bg-brand-100 text-brand-700"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+              ? "bg-brand-100 text-brand-700 ring-1 ring-brand-200"
+              : "btn-soft text-gray-700",
           )}
         >
           ✨ Ask AI
         </button>
         <button
           onClick={props.onOpenNews}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-200"
+          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700"
         >
           📰 News digest
         </button>
@@ -74,8 +74,10 @@ export default function Sidebar(props: SidebarProps) {
               key={r.key}
               onClick={() => props.onSelectCategory(r.key)}
               className={cx(
-                "mb-0.5 flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition",
-                active ? "bg-brand-50 font-medium text-brand-700" : "text-gray-700 hover:bg-gray-50",
+                "lift mb-0.5 flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm",
+                active
+                  ? "bg-gradient-to-r from-brand-50 to-violet-50 font-semibold text-brand-700 ring-1 ring-brand-100"
+                  : "text-gray-700 hover:bg-white/70",
               )}
             >
               <span className="flex items-center gap-2">
@@ -83,7 +85,14 @@ export default function Sidebar(props: SidebarProps) {
                 {r.label}
               </span>
               {typeof count === "number" && count > 0 && (
-                <span className="text-xs text-[var(--muted)]">{count}</span>
+                <span
+                  className={cx(
+                    "rounded-full px-1.5 text-[11px] tabular-nums",
+                    active ? "bg-white/70 text-brand-700" : "text-[var(--muted)]",
+                  )}
+                >
+                  {count}
+                </span>
               )}
             </button>
           );
@@ -95,7 +104,7 @@ export default function Sidebar(props: SidebarProps) {
         <button
           onClick={props.onSync}
           disabled={props.syncing}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
         >
           {props.syncing ? <Spinner className="text-gray-500" /> : "🔄"}
           {props.syncing ? "Syncing…" : "Sync inbox"}

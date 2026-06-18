@@ -101,12 +101,14 @@ export default function ChatPanel({
   if (!open) return null;
 
   return (
-    <div className="flex w-[420px] shrink-0 flex-col border-l border-[var(--border)] bg-white">
-      <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">✨</span>
+    <div className="surface flex w-[420px] shrink-0 flex-col border-l border-[var(--border)]">
+      <div className="flex items-center justify-between border-b border-[var(--border)] bg-gradient-to-r from-brand-50 to-violet-50 px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <span className="brand-gradient flex h-8 w-8 items-center justify-center rounded-xl text-sm shadow-[0_6px_16px_-8px_rgba(79,70,229,.7)]">
+            ✨
+          </span>
           <div>
-            <h2 className="text-sm font-semibold">AI Assistant</h2>
+            <h2 className="text-sm font-semibold tracking-tight">AI Assistant</h2>
             <p className="text-[11px] text-[var(--muted)]">Answers only from your emails</p>
           </div>
         </div>
@@ -130,7 +132,7 @@ export default function ChatPanel({
                 <button
                   key={ex}
                   onClick={() => ask(ex)}
-                  className="block w-full rounded-lg border border-[var(--border)] px-3 py-2 text-left text-sm text-gray-700 transition hover:border-brand-300 hover:bg-brand-50"
+                  className="lift block w-full rounded-xl border border-[var(--border-strong)] bg-white px-3 py-2 text-left text-sm text-gray-700 hover:border-brand-300 hover:text-brand-700"
                 >
                   {ex}
                 </button>
@@ -140,13 +142,13 @@ export default function ChatPanel({
         )}
 
         {messages.map((m, i) => (
-          <div key={i} className={cx(m.role === "user" ? "flex justify-end" : "")}>
+          <div key={i} className={cx("animate-rise", m.role === "user" ? "flex justify-end" : "")}>
             <div
               className={cx(
                 "max-w-[92%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                 m.role === "user"
-                  ? "bg-brand-600 text-white"
-                  : "bg-gray-100 text-gray-800",
+                  ? "brand-gradient text-white shadow-[0_8px_18px_-10px_rgba(79,70,229,.7)]"
+                  : "border border-[var(--border)] bg-white text-gray-800 shadow-[0_8px_22px_-18px_rgba(16,24,40,.3)]",
               )}
             >
               {m.role === "assistant" ? (
@@ -210,7 +212,7 @@ export default function ChatPanel({
           <button
             onClick={() => ask(input)}
             disabled={loading || !input.trim()}
-            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
+            className="btn-primary rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             Send
           </button>

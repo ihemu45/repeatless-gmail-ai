@@ -50,8 +50,8 @@ export default function ComposeModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+      <div className="animate-rise flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-3">
           <h2 className="font-semibold">✏️ Compose with AI</h2>
           <button
@@ -129,7 +129,7 @@ export default function ComposeModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={send}
             disabled={sending}
-            className="flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
+            className="btn-primary flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50"
           >
             {sending ? <Spinner /> : "📨"} Send
           </button>

@@ -46,7 +46,7 @@ export default function ThreadView(props: ThreadViewProps) {
       <div className="flex-1 overflow-y-auto px-6 py-5 scroll-thin">
         {/* Thread-level AI summary */}
         {props.thread.summary && (
-          <div className="mb-5 rounded-xl border border-brand-100 bg-brand-50 p-4">
+          <div className="mb-5 rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-violet-50 p-4 shadow-[0_10px_28px_-20px_rgba(79,70,229,.5)]">
             <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-brand-700">
               ✨ Thread summary
             </div>
@@ -73,9 +73,9 @@ function MessageCard({ message }: { message: MessageRow }) {
   const shown = expanded || !long ? body : body.slice(0, 600) + "…";
 
   return (
-    <div className="mb-3 rounded-xl border border-[var(--border)] bg-white p-4">
+    <div className="card lift mb-3 p-4">
       <div className="mb-2 flex items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
+        <div className="brand-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white">
           {initials(message.from_name, message.from_email)}
         </div>
         <div className="min-w-0 flex-1">
@@ -199,9 +199,7 @@ function ReplyComposer({ threadId, onSent }: { threadId: string; onSent: () => v
             <button
               onClick={send}
               disabled={sending}
-              className={cx(
-                "flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 disabled:opacity-50",
-              )}
+              className="btn-primary flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium disabled:opacity-50"
             >
               {sending ? <Spinner /> : "📨"} Send reply
             </button>

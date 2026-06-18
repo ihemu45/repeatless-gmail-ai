@@ -44,8 +44,8 @@ export default function NewsModal({
   const dedupSaved = meta ? meta.itemCount - clusters.length : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+      <div className="animate-rise flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-[var(--border)] px-5 py-3">
           <h2 className="font-semibold">📰 News digest</h2>
           <button
