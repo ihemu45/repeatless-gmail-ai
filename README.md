@@ -142,9 +142,10 @@ repeatless-gmail-ai/
 4. Deploy. `vercel.json` registers the hourly cron at `/api/sync/cron`
    (protected by `CRON_SECRET`).
 
-> **Cron frequency note:** `vercel.json` is set to hourly. Vercel's Hobby plan
-> limits cron frequency — adjust the schedule to your plan, or trigger sync from
-> the UI.
+> **Cron frequency note:** `vercel.json` is set to once daily (`0 9 * * *`)
+> because Vercel's Hobby plan only allows daily cron jobs. On Pro you can run it
+> more frequently (e.g. hourly `0 * * * *`); you can also trigger sync any time
+> from the UI.
 
 ## Notes & limitations
 
