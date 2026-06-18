@@ -53,11 +53,9 @@ function AnswerText({
 }
 
 export default function ChatPanel({
-  open,
   onClose,
   onOpenThread,
 }: {
-  open: boolean;
   onClose: () => void;
   onOpenThread: (threadId: string) => void;
 }) {
@@ -98,11 +96,9 @@ export default function ChatPanel({
     }
   }
 
-  if (!open) return null;
-
   return (
-    <div className="surface flex w-[420px] shrink-0 flex-col border-l border-[var(--line)]">
-      <div className="flex items-center justify-between border-b border-[var(--line)] px-5 py-4">
+    <div className="surface flex flex-1 flex-col border-l border-[var(--line)]">
+      <div className="flex items-center justify-between border-b border-[var(--line)] px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--line-2)] bg-[var(--panel)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
             ✨
@@ -122,7 +118,8 @@ export default function ChatPanel({
         </button>
       </div>
 
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4 scroll-thin">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-thin">
+       <div className="mx-auto w-full max-w-[820px] space-y-4 px-6 py-6">
         {messages.length === 0 && (
           <div className="space-y-3">
             <p className="text-sm text-gray-600">
@@ -194,10 +191,11 @@ export default function ChatPanel({
             <Spinner className="text-gray-400" /> Searching your emails…
           </div>
         )}
+       </div>
       </div>
 
-      <div className="border-t border-[var(--border)] p-3">
-        <div className="flex gap-2">
+      <div className="border-t border-[var(--line)] py-3">
+        <div className="mx-auto flex w-full max-w-[820px] gap-2 px-6">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}

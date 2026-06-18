@@ -177,6 +177,7 @@ export default function InboxApp({ initialEmail }: { initialEmail: string }) {
 
   function openThreadFromChat(threadId: string) {
     setSelectedId(threadId);
+    setChatOpen(false); // reveal the thread (chat occupies the reading pane)
   }
 
   const title =
@@ -214,18 +215,18 @@ export default function InboxApp({ initialEmail }: { initialEmail: string }) {
         title={title}
       />
 
-      <ThreadView
-        thread={detail?.thread ?? null}
-        messages={detail?.messages ?? []}
-        loading={detailLoading}
-        onReplySent={() => selectedId && loadThread(selectedId)}
-      />
-
-      <ChatPanel
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-        onOpenThread={openThreadFromChat}
-      />
+      {/* The AI assistant takes over the reading pane when open, so the inbox
+          list stays usable and nothing gets squeezed into a sliver. */}
+      {chatOpen ? (
+        <ChatPanel onClose={() => setChatOpen(false)} onOpenThread={openThreadFromChat} />
+      ) : (
+        <ThreadView
+          thread={detail?.thread ?? null}
+          messages={detail?.messages ?? []}
+          loading={detailLoading}
+          onReplySent={() => selectedId && loadThread(selectedId)}
+        />
+      )}
 
       {composeOpen && <ComposeModal onClose={() => setComposeOpen(false)} />}
       {newsOpen && (

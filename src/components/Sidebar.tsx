@@ -52,7 +52,7 @@ export default function Sidebar(props: SidebarProps) {
           className={cx(
             "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition",
             props.chatOpen
-              ? "bg-[var(--accent-soft)] text-[var(--accent-deep)] ring-1 ring-[#dad7f4]"
+              ? "bg-[var(--accent-soft)] text-[var(--accent-deep)]"
               : "btn-soft text-[var(--ink-2)]",
           )}
         >
