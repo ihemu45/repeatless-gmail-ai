@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repeatless Mail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF7F2;
+    --panel:#FFFDFA;
+    --panel-2:#F6F1E9;
+    --ink:#262019;
+    --ink-soft:#5C5346;
+    --ink-faint:#938877;
+    --border:#E7DFD2;
+    --border-soft:#EFE8DC;
+    --accent:#4338CA;
+    --accent-soft:#EEECFB;
+    --accent-ink:#3730A3;
+    --white:#fff;
+
+    /* chip palettes */
+    --c-finance-bg:#EAF1EC;   --c-finance-ink:#3F6F52;
+    --c-notif-bg:#F3ECE2;     --c-notif-ink:#8A6A3E;
+    --c-news-bg:#EEECFB;      --c-news-ink:#4B40B8;
+    --c-job-bg:#F6E9E6;       --c-job-ink:#A4543F;
+
+    --shadow:0 1px 2px rgba(60,48,32,.04), 0 12px 30px -18px rgba(60,48,32,.18);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    height:100vh;
+    width:100vw;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  .app{
+    width:1320px;
+    height:860px;
+    background:var(--bg);
+    display:grid;
+    grid-template-columns:250px 380px 1fr;
+    overflow:hidden;
+  }
+
+  /* ---------------- LEFT SIDEBAR ---------------- */
+  .sidebar{
+    background:var(--bg);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    padding:26px 18px 18px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:0 6px 4px;
+    margin-bottom:24px;
+  }
+  .mark{
+    width:30px;height:30px;
+    border-radius:9px;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:17px;
+    line-height:1;
+    flex:none;
+    box-shadow:0 4px 10px -4px rgba(67,56,202,.55);
+  }
+  .brand-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:18.5px;
+    letter-spacing:-.2px;
+    color:var(--ink);
+  }
+
+  .btn{
+    width:100%;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:13.5px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 13px;
+    transition:.16s ease;
+  }
+  .btn .ic{width:16px;text-align:center;font-size:14px;line-height:1;opacity:.95;}
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    box-shadow:0 6px 14px -8px rgba(67,56,202,.7);
+    margin-bottom:8px;
+  }
+  .btn-primary:hover{background:#3a30b8;transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-soft);
+    font-weight:500;
+    border:1px solid transparent;
+  }
+  .btn-ghost:hover{background:var(--panel-2);color:var(--ink);}
+  .btn-row{display:flex;gap:8px;margin-bottom:22px;}
+  .btn-row .btn{margin-bottom:0;padding:9px 11px;border:1px solid var(--border);background:var(--panel);}
+  .btn-row .btn:hover{background:var(--panel-2);}
+
+  .nav-label{
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding:0 8px;
+    margin-bottom:8px;
+  }
+  .nav{list-style:none;margin:0 0 auto;padding:0;display:flex;flex-direction:column;gap:1px;}
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 11px;
+    border-radius:9px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:500;
+    transition:.14s ease;
+    position:relative;
+  }
+  .nav-item .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ink-faint);opacity:.55;}
+  .nav-item .label{flex:1;white-space:nowrap;}
+  .nav-item .count{
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ink-faint);
+    font-variant-numeric:tabular-nums;
+  }
+  .nav-item:hover{background:var(--panel-2);color:var(--ink);}
+  .nav-item.active{
+    background:var(--accent-soft);
+    color:var(--accent-ink);
+    font-weight:600;
+  }
+  .nav-item.active .dot{background:var(--accent);opacity:1;}
+  .nav-item.active .count{color:var(--accent-ink);}
+  .nav-item.zero .count{opacity:.5;}
+
+  .d-finance .dot{background:var(--c-finance-ink);opacity:.9;}
+  .d-notif .dot{background:var(--c-notif-ink);opacity:.9;}
+  .d-news .dot{background:var(--c-news-ink);opacity:.9;}
+  .d-job .dot{background:var(--c-job-ink);opacity:.9;}
+
+  .sidebar-foot{margin-top:14px;}
+  .sync{
+    display:flex;align-items:center;gap:9px;
+    width:100%;
+    border:1px solid var(--border);
+    background:var(--panel);
+    border-radius:10px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--ink-soft);
+    transition:.14s ease;
+    margin-bottom:14px;
+  }
+  .sync:hover{background:var(--panel-2);color:var(--ink);}
+  .sync .ic{font-size:13px;color:var(--accent);}
+  .sync .meta{margin-left:auto;font-size:11px;color:var(--ink-faint);font-weight:500;}
+
+  .account{
+    border-top:1px solid var(--border);
+    padding-top:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .acct-avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:#D8CBB6;color:#5a4a30;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:700;flex:none;
+  }
+  .acct-info{flex:1;min-width:0;}
+  .acct-email{font-size:11.5px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .acct-signout{font-size:11px;color:var(--ink-faint);text-decoration:none;font-weight:500;}
+  .acct-signout:hover{color:var(--accent);text-decoration:underline;}
+
+  /* ---------------- MIDDLE THREAD LIST ---------------- */
+  .threads{
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+  }
+  .threads-head{
+    padding:22px 22px 16px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .threads-title{
+    display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;
+  }
+  .threads-title h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:21px;
+    letter-spacing:-.3px;
+    margin:0;
+    color:var(--ink);
+  }
+  .threads-title .sub{font-size:12px;color:var(--ink-faint);font-weight:500;}
+  .search{
+    display:flex;align-items:center;gap:10px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    border-radius:11px;
+    padding:10px 13px;
+  }
+  .search .ic{color:var(--ink-faint);font-size:14px;line-height:1;}
+  .search input{
+    border:none;background:transparent;outline:none;
+    font-family:inherit;font-size:13px;color:var(--ink);
+    width:100%;
+  }
+  .search input::placeholder{color:var(--ink-faint);}
+
+  .list{flex:1;overflow:hidden;}
+  .row{
+    display:flex;
+    gap:13px;
+    padding:15px 22px 15px;
+    border-bottom:1px solid var(--border-soft);
+    cursor:pointer;
+    position:relative;
+    transition:background .14s ease;
+  }
+  .row:hover{background:var(--panel-2);}
+  .row.unread::before{
+    content:"";
+    position:absolute;left:9px;top:50%;transform:translateY(-50%);
+    width:6px;height:6px;border-radius:50%;background:var(--accent);
+  }
+  .row.selected{background:var(--accent-soft);}
+  .row.selected::after{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);
+  }
+  .avatar{
+    width:38px;height:38px;border-radius:50%;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;color:#fff;
+    letter-spacing:.2px;
+  }
+  .a-gpay{background:#3f6f52;}
+  .a-fire{background:#c8722e;}
+  .a-gcloud{background:#3d6db5;}
+  .a-google{background:#7a6f60;}
+  .a-tc{background:#5b50c9;}
+  .a-acme{background:#a4543f;}
+
+  .row-body{flex:1;min-width:0;}
+  .row-top{display:flex;align-items:baseline;gap:8px;margin-bottom:3px;}
+  .sender{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .row.selected .sender{color:var(--accent-ink);}
+  .time{margin-left:auto;font-size:11px;color:var(--ink-faint);font-weight:500;white-space:nowrap;flex:none;}
+  .subject{
+    font-size:12.5px;font-weight:600;color:var(--ink);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-bottom:2px;line-height:1.35;
+  }
+  .row.unread .subject{font-weight:700;}
+  .snippet{
+    font-size:11.5px;color:var(--ink-faint);line-height:1.4;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-bottom:8px;
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:600;
+    padding:3px 9px;border-radius:20px;
+    letter-spacing:.01em;
+  }
+  .chip .cd{width:5px;height:5px;border-radius:50%;}
+  .chip-finance{background:var(--c-finance-bg);color:var(--c-finance-ink);}
+  .chip-finance .cd{background:var(--c-finance-ink);}
+  .chip-notif{background:var(--c-notif-bg);color:var(--c-notif-ink);}
+  .chip-notif .cd{background:var(--c-notif-ink);}
+  .chip-news{background:var(--c-news-bg);color:var(--c-news-ink);}
+  .chip-news .cd{background:var(--c-news-ink);}
+  .chip-job{background:var(--c-job-bg);color:var(--c-job-ink);}
+  .chip-job .cd{background:var(--c-job-ink);}
+
+  /* ---------------- RIGHT PANEL — AI ---------------- */
+  .ai{
+    background:var(--bg);
+    display:flex;flex-direction:column;min-width:0;
+  }
+  .ai-head{
+    padding:22px 28px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .ai-head-top{display:flex;align-items:center;gap:11px;margin-bottom:5px;}
+  .ai-orb{
+    width:30px;height:30px;border-radius:9px;flex:none;
+    background:var(--accent-soft);
+    border:1px solid #DDD8F4;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);font-size:15px;
+  }
+  .ai-head h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:18px;
+    letter-spacing:-.2px;margin:0;color:var(--ink);
+  }
+  .ai-head .scope{
+    font-size:11.5px;color:var(--ink-faint);font-weight:500;
+    display:flex;align-items:center;gap:6px;margin-left:41px;
+  }
+  .ai-head .scope .lock{font-size:11px;color:var(--c-finance-ink);}
+
+  .ai-body{
+    flex:1;overflow:hidden;
+    padding:26px 28px 18px;
+    display:flex;flex-direction:column;gap:18px;
+  }
+
+  .q-wrap{display:flex;justify-content:flex-end;}
+  .bubble-q{
+    background:var(--accent);
+    color:#fff;
+    font-size:13px;font-weight:500;
+    padding:11px 15px;
+    border-radius:14px 14px 4px 14px;
+    max-width:80%;
+    box-shadow:0 6px 16px -10px rgba(67,56,202,.7);
+  }
+
+  .a-wrap{display:flex;gap:12px;align-items:flex-start;}
+  .a-avatar{
+    width:30px;height:30px;border-radius:9px;flex:none;
+    background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;font-size:14px;
+  }
+  .bubble-a{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:4px 14px 14px 14px;
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+    max-width:86%;
+  }
+  .bubble-a p{
+    margin:0;
+    font-size:13.5px;line-height:1.65;color:var(--ink);
+  }
+  sup.cite{
+    font-size:9.5px;font-weight:700;color:var(--accent);
+    background:var(--accent-soft);
+    padding:1px 4px;border-radius:5px;
+    margin-left:2px;vertical-align:super;
+    line-height:1;
+  }
+
+  .sources{
+    margin-left:42px;
+  }
+  .sources-label{
+    font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px;
+  }
+  .source{
+    display:flex;gap:11px;align-items:flex-start;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:11px 13px;
+    margin-bottom:9px;
+    cursor:pointer;
+    transition:.14s ease;
+  }
+  .source:hover{border-color:#D6CDBE;background:var(--panel-2);transform:translateY(-1px);box-shadow:var(--shadow);}
+  .src-num{
+    width:19px;height:19px;border-radius:50%;flex:none;
+    background:var(--accent);color:#fff;
+    font-size:10.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    margin-top:1px;
+  }
+  .src-text{min-width:0;}
+  .src-from{font-size:12.5px;font-weight:600;color:var(--ink);}
+  .src-desc{font-size:11.5px;color:var(--ink-faint);margin-top:1px;}
+  .src-go{margin-left:auto;color:var(--ink-faint);font-size:14px;align-self:center;}
+
+  .ai-foot{
+    padding:16px 28px 24px;
+    border-top:1px solid var(--border);
+  }
+  .composer{
+    display:flex;align-items:center;gap:10px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:8px 8px 8px 16px;
+    box-shadow:var(--shadow);
+  }
+  .composer:focus-within{border-color:var(--accent);}
+  .composer input{
+    flex:1;border:none;background:transparent;outline:none;
+    font-family:inherit;font-size:13px;color:var(--ink);
+  }
+  .composer input::placeholder{color:var(--ink-faint);}
+  .send{
+    border:none;cursor:pointer;
+    background:var(--accent);color:#fff;
+    font-family:inherit;font-size:12.5px;font-weight:600;
+    padding:9px 16px;border-radius:10px;
+    display:flex;align-items:center;gap:7px;
+    transition:.16s ease;
+  }
+  .send:hover{background:#3a30b8;}
+  .send .ic{font-size:13px;}
+  .ai-disclaim{
+    text-align:center;font-size:10.5px;color:var(--ink-faint);
+    margin-top:11px;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ============ LEFT SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark">R</div>
+        <div class="brand-name">Repeatless Mail</div>
+      </div>
+
+      <button class="btn btn-primary"><span class="ic">&#9998;</span> Compose</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost"><span class="ic">&#10024;</span> Ask AI</button>
+        <button class="btn btn-ghost"><span class="ic">&#9776;</span> News digest</button>
+      </div>
+
+      <div class="nav-label">Categories</div>
+      <ul class="nav">
+        <li class="nav-item active"><span class="dot"></span><span class="label">All mail</span><span class="count">45</span></li>
+        <li class="nav-item d-news"><span class="dot"></span><span class="label">Newsletters</span><span class="count">6</span></li>
+        <li class="nav-item d-job zero"><span class="dot"></span><span class="label">Job / Recruitment</span><span class="count">0</span></li>
+        <li class="nav-item d-finance"><span class="dot"></span><span class="label">Finance</span><span class="count">8</span></li>
+        <li class="nav-item d-notif"><span class="dot"></span><span class="label">Notifications</span><span class="count">26</span></li>
+        <li class="nav-item zero"><span class="dot"></span><span class="label">Personal</span><span class="count">0</span></li>
+        <li class="nav-item"><span class="dot"></span><span class="label">Work / Professional</span><span class="count">2</span></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <button class="sync"><span class="ic">&#8635;</span> Sync inbox <span class="meta">2m ago</span></button>
+        <div class="account">
+          <div class="acct-avatar">HB</div>
+          <div class="acct-info">
+            <div class="acct-email">hbezawada9@gmail.com</div>
+          </div>
+          <a class="acct-signout" href="#">Sign out</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ MIDDLE THREAD LIST ============ -->
+    <section class="threads">
+      <div class="threads-head">
+        <div class="threads-title">
+          <h1>All mail</h1>
+          <span class="sub">45 conversations</span>
+        </div>
+        <div class="search">
+          <span class="ic">&#9906;</span>
+          <input type="text" placeholder="Search mail and people" value="">
+        </div>
+      </div>
+
+      <div class="list">
+
+        <div class="row unread">
+          <div class="avatar a-gpay">GP</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">Google Payments</span><span class="time">2h</span></div>
+            <div class="subject">We&rsquo;ve received your payment for 4291-96&hellip;</div>
+            <div class="snippet">Thanks &mdash; your payment of US$10.00 has been received and applied to your account.</div>
+            <span class="chip chip-finance"><span class="cd"></span>Finance</span>
+          </div>
+        </div>
+
+        <div class="row selected unread">
+          <div class="avatar a-fire">F</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">Firebase</span><span class="time">1h</span></div>
+            <div class="subject">Your project FocusOS was upgraded to Blaze</div>
+            <div class="snippet">You&rsquo;re now on the pay-as-you-go Blaze plan with expanded quotas and billing.</div>
+            <span class="chip chip-notif"><span class="cd"></span>Notifications</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="avatar a-gcloud">GC</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">Google Cloud</span><span class="time">3h</span></div>
+            <div class="subject">You have upgraded to a paid Google Cloud account</div>
+            <div class="snippet">Your free trial has ended and your account is now a paid Cloud Billing account.</div>
+            <span class="chip chip-finance"><span class="cd"></span>Finance</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="avatar a-google">G</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">Google</span><span class="time">23h</span></div>
+            <div class="subject">Security alert</div>
+            <div class="snippet">Backup codes for 2-Step Verification were generated for your account.</div>
+            <span class="chip chip-notif"><span class="cd"></span>Notifications</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="avatar a-tc">TD</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">TechCrunch Daily</span><span class="time">1d</span></div>
+            <div class="subject">The 5 biggest AI launches this week</div>
+            <div class="snippet">From new model releases to funding rounds &mdash; here&rsquo;s what mattered in AI.</div>
+            <span class="chip chip-news"><span class="cd"></span>Newsletters</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="avatar a-acme">AR</div>
+          <div class="row-body">
+            <div class="row-top"><span class="sender">Acme Recruiting</span><span class="time">2d</span></div>
+            <div class="subject">Update on your application</div>
+            <div class="snippet">Thank you for applying &mdash; we&rsquo;d like to share the next steps in your process.</div>
+            <span class="chip chip-job"><span class="cd"></span>Job / Recruitment</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ RIGHT PANEL — AI ============ -->
+    <section class="ai">
+      <div class="ai-head">
+        <div class="ai-head-top">
+          <div class="ai-orb">&#10024;</div>
+          <h2>AI Assistant</h2>
+        </div>
+        <div class="scope"><span class="lock">&#128274;</span> Answers only from your emails</div>
+      </div>
+
+      <div class="ai-body">
+        <div class="q-wrap">
+          <div class="bubble-q">Summarize my Google Cloud payments</div>
+        </div>
+
+        <div class="a-wrap">
+          <div class="a-avatar">R</div>
+          <div class="bubble-a">
+            <p>You&rsquo;ve made one payment of US$10.00 to Google Cloud, confirmed received<sup class="cite">1</sup>, and upgraded to a paid account<sup class="cite">2</sup>. A refund is also being processed.</p>
+          </div>
+        </div>
+
+        <div class="sources">
+          <div class="sources-label">Sources</div>
+          <div class="source">
+            <div class="src-num">1</div>
+            <div class="src-text">
+              <div class="src-from">Google Payments</div>
+              <div class="src-desc">Payment received &mdash; US$10.00</div>
+            </div>
+            <span class="src-go">&#8599;</span>
+          </div>
+          <div class="source">
+            <div class="src-num">2</div>
+            <div class="src-text">
+              <div class="src-from">Google Cloud</div>
+              <div class="src-desc">Account upgraded to paid</div>
+            </div>
+            <span class="src-go">&#8599;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-foot">
+        <div class="composer">
+          <input type="text" placeholder="Ask about your emails&hellip;">
+          <button class="send">Send <span class="ic">&#8593;</span></button>
+        </div>
+        <div class="ai-disclaim">Repeatless cites every answer &mdash; nothing leaves your inbox.</div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
