@@ -113,6 +113,9 @@ async function embedSubBatch(
     model: `models/${model}`,
     content: { parts: [{ text: t.slice(0, 8000) }] },
     taskType,
+    // Pin the output size to match the pgvector(768) column. gemini-embedding-001
+    // defaults to 3072 dims unless this is set.
+    outputDimensionality: EMBEDDING_DIM,
   }));
 
   return withBackoff(

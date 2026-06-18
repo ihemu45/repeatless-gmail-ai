@@ -36,7 +36,13 @@ interface PendingRow {
   snippet: string | null;
   body_text: string | null;
   internal_date: string | null;
+  summary: string | null;
+  category: string | null;
+  embedded: boolean;
 }
+
+/** A message still needs work if it isn't embedded OR has no summary yet. */
+const PENDING_FILTER = "embedded.eq.false,summary.is.null";
 
 export async function processPending(
   userId: string,
@@ -54,10 +60,10 @@ export async function processPending(
     const { data: pending } = await supabase
       .from("messages")
       .select(
-        "id, thread_id, from_name, from_email, subject, snippet, body_text, internal_date",
+        "id, thread_id, from_name, from_email, subject, snippet, body_text, internal_date, summary, category, embedded",
       )
       .eq("user_id", userId)
-      .eq("embedded", false)
+      .or(PENDING_FILTER)
       .limit(batchSize);
 
     if (!pending || pending.length === 0) break;
@@ -79,7 +85,7 @@ export async function processPending(
     .from("messages")
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
-    .eq("embedded", false);
+    .or(PENDING_FILTER);
   const remaining = count ?? 0;
 
   return { processed, remaining, more: remaining > 0 };
@@ -92,60 +98,76 @@ async function processOne(userId: string, m: PendingRow): Promise<void> {
     : m.from_email ?? "unknown sender";
   const body = m.body_text || m.snippet || "";
 
-  // Summary (Gemini) + category (NIM) in parallel.
+  // Only do the work that's actually missing — so a message that's already
+  // embedded but lost its summary to a rate limit just retries the summary,
+  // without re-embedding (which would waste quota).
+  const needSummary = !m.summary;
+  const needCategory = !m.category;
+  const needEmbed = !m.embedded;
+
   const [summary, category] = await Promise.all([
-    summarizeMessage({ from: fromLabel, subject: m.subject ?? "", body }).catch(
-      () => null,
-    ),
-    categorizeEmail({
-      from: fromLabel,
-      subject: m.subject ?? "",
-      snippet: m.snippet ?? "",
-      body,
-    }),
+    needSummary
+      ? summarizeMessage({ from: fromLabel, subject: m.subject ?? "", body }).catch(
+          () => null,
+        )
+      : Promise.resolve(m.summary),
+    needCategory
+      ? categorizeEmail({
+          from: fromLabel,
+          subject: m.subject ?? "",
+          snippet: m.snippet ?? "",
+          body,
+        })
+      : Promise.resolve(m.category as EmailCategory),
   ]);
 
-  // Embeddings: prefix each chunk's source so retrieved snippets are
-  // self-describing (helps source attribution downstream).
-  const header = `Subject: ${m.subject ?? "(no subject)"}\nFrom: ${fromLabel}`;
-  const chunks = chunkText(`${header}\n\n${body}`);
+  let embeddingOk = !needEmbed; // already embedded ⇒ nothing to do
+  if (needEmbed) {
+    // Prefix each chunk's source so retrieved snippets are self-describing.
+    const header = `Subject: ${m.subject ?? "(no subject)"}\nFrom: ${fromLabel}`;
+    const chunks = chunkText(`${header}\n\n${body}`);
 
-  // Idempotent: clear any prior chunks for this message first.
-  await supabase
-    .from("email_chunks")
-    .delete()
-    .eq("user_id", userId)
-    .eq("message_id", m.id);
+    // Idempotent: clear any prior chunks for this message first.
+    await supabase
+      .from("email_chunks")
+      .delete()
+      .eq("user_id", userId)
+      .eq("message_id", m.id);
 
-  if (chunks.length > 0) {
-    let embeddings: number[][] = [];
-    try {
-      embeddings = await geminiEmbedBatch(chunks, "RETRIEVAL_DOCUMENT");
-    } catch {
-      embeddings = [];
-    }
-    if (embeddings.length === chunks.length) {
-      const rows = chunks.map((content, i) => ({
-        user_id: userId,
-        message_id: m.id,
-        thread_id: m.thread_id,
-        chunk_index: i,
-        content,
-        from_email: m.from_email,
-        from_name: m.from_name,
-        subject: m.subject,
-        message_date: m.internal_date,
-        embedding: JSON.stringify(embeddings[i]), // pgvector literal
-      }));
-      await supabase.from("email_chunks").insert(rows);
+    embeddingOk = chunks.length === 0; // empty body ⇒ nothing to embed
+    if (chunks.length > 0) {
+      try {
+        const embeddings = await geminiEmbedBatch(chunks, "RETRIEVAL_DOCUMENT");
+        if (embeddings.length === chunks.length) {
+          const rows = chunks.map((content, i) => ({
+            user_id: userId,
+            message_id: m.id,
+            thread_id: m.thread_id,
+            chunk_index: i,
+            content,
+            from_email: m.from_email,
+            from_name: m.from_name,
+            subject: m.subject,
+            message_date: m.internal_date,
+            embedding: JSON.stringify(embeddings[i]), // pgvector literal
+          }));
+          await supabase.from("email_chunks").insert(rows);
+          embeddingOk = true;
+        }
+      } catch (err) {
+        console.error(`Embedding failed for message ${m.id}`, err);
+        embeddingOk = false;
+      }
     }
   }
 
-  await supabase
-    .from("messages")
-    .update({ summary, category, embedded: true })
-    .eq("user_id", userId)
-    .eq("id", m.id);
+  // Persist only the fields we (re)computed. `embedded` gates reprocessing and
+  // is only set true once embeddings exist; a null summary will be retried on a
+  // later pass.
+  const update: Record<string, unknown> = { embedded: embeddingOk };
+  if (needSummary) update.summary = summary;
+  if (needCategory) update.category = category;
+  await supabase.from("messages").update(update).eq("user_id", userId).eq("id", m.id);
 }
 
 /** Set each touched thread's category to its most recent message's category. */

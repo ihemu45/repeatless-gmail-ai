@@ -52,10 +52,10 @@ export const env = {
     return required("GEMINI_API_KEY");
   },
   get geminiModel() {
-    return optional("GEMINI_MODEL", "gemini-2.0-flash");
+    return optional("GEMINI_MODEL", "gemini-2.5-flash");
   },
   get geminiEmbedModel() {
-    return optional("GEMINI_EMBED_MODEL", "text-embedding-004");
+    return optional("GEMINI_EMBED_MODEL", "gemini-embedding-001");
   },
 
   // NVIDIA NIM (secondary)
