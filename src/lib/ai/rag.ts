@@ -59,7 +59,25 @@ export async function answerQuery(
   chunks = await rerank(standalone, chunks);
 
   const { context, sources } = buildContext(chunks);
-  const answer = await generateAnswer(question, context, history);
+
+  let answer: string;
+  try {
+    answer = await generateAnswer(question, context, history);
+  } catch (err) {
+    // Degrade gracefully when the model is rate-limited (Gemini free tier):
+    // still surface the matched source emails and ask the user to retry.
+    if (isRateLimited(err)) {
+      return {
+        answer:
+          "I found relevant emails for your question, but the AI model is rate-limited " +
+          "right now (Gemini free tier). The matching emails are listed below — please " +
+          "try again in a minute for the full answer.",
+        sources,
+        retrievedCount: chunks.length,
+      };
+    }
+    throw err;
+  }
 
   // Keep only the sources the model actually cited (fall back to all if the
   // model didn't use explicit [S#] markers).
@@ -72,6 +90,11 @@ export async function answerQuery(
     sources: cited.length > 0 ? cited : sources,
     retrievedCount: chunks.length,
   };
+}
+
+function isRateLimited(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /\b429\b/.test(msg) || /quota|rate.?limit/i.test(msg);
 }
 
 // ----------------------------------------------------------------------------
