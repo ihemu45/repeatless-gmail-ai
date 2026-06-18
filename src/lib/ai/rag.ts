@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "../supabase";
 import { geminiEmbed, geminiGenerate } from "./gemini";
-import { nimChatJSON } from "./nim";
+import { nimChat, nimChatJSON } from "./nim";
 import type { ChatSource, RetrievedChunk } from "../types";
 
 /**
@@ -237,12 +237,25 @@ async function generateAnswer(
     `Question: ${question}\n\n` +
     `Answer using only the excerpts above, citing sources like [S1].`;
 
-  return geminiGenerate({
-    system: AGENT_SYSTEM,
-    prompt,
-    temperature: 0.2,
-    maxOutputTokens: 1200,
-  });
+  // Primary: Gemini. If it's rate-limited, fall back to the secondary model
+  // (NVIDIA NIM) so the assistant still answers — NIM has a separate quota.
+  try {
+    return await geminiGenerate({
+      system: AGENT_SYSTEM,
+      prompt,
+      temperature: 0.2,
+      maxOutputTokens: 1200,
+    });
+  } catch (err) {
+    if (!isRateLimited(err)) throw err;
+    return nimChat(
+      [
+        { role: "system", content: AGENT_SYSTEM },
+        { role: "user", content: prompt },
+      ],
+      { temperature: 0.2, maxTokens: 1200 },
+    );
+  }
 }
 
 /** Rewrite a follow-up into a standalone query for better retrieval. */

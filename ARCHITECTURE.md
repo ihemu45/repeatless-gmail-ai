@@ -193,6 +193,10 @@ work where an 8B instruct model is the right size:
 - **Categorization** — one classification call per message; cheap, deterministic
   (temp 0), JSON-constrained.
 - **RAG re-ranking** — scoring/ordering retrieved passages for relevance.
+- **Answer-generation fallback** — if Gemini is rate-limited (free-tier quota),
+  the chat agent falls back to NIM to generate the grounded, cited answer. NIM
+  has a separate quota, so the assistant stays available; this also exercises
+  both required models on the critical path.
 
 This is a deliberate division of labour: Gemini handles open-ended reasoning
 (summaries, drafting, the final grounded answer) where quality matters most,
