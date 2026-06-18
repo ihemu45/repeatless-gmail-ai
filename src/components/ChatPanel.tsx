@@ -18,6 +18,40 @@ const EXAMPLES = [
   "List important tech news from my newsletters",
 ];
 
+/** Renders an answer, turning inline [S1] markers into small superscript
+ * footnote chips that link to the matching source — clean, like a citation. */
+function AnswerText({
+  content,
+  sources,
+  onOpenThread,
+}: {
+  content: string;
+  sources?: ChatSource[];
+  onOpenThread: (threadId: string) => void;
+}) {
+  const parts = content.split(/(\[S\d+\])/g);
+  return (
+    <p className="prewrap">
+      {parts.map((part, i) => {
+        const match = part.match(/^\[S(\d+)\]$/);
+        if (!match) return <span key={i}>{part}</span>;
+        const n = Number(match[1]);
+        const src = sources?.[n - 1];
+        return (
+          <button
+            key={i}
+            onClick={() => src && onOpenThread(src.thread_id)}
+            title={src ? `${src.subject ?? ""} — ${src.from ?? ""}` : undefined}
+            className="relative -top-1 mx-0.5 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-brand-100 px-1 text-[9px] font-semibold text-brand-700 align-super hover:bg-brand-200"
+          >
+            {n}
+          </button>
+        );
+      })}
+    </p>
+  );
+}
+
 export default function ChatPanel({
   open,
   onClose,
@@ -115,7 +149,15 @@ export default function ChatPanel({
                   : "bg-gray-100 text-gray-800",
               )}
             >
-              <p className="prewrap">{m.content}</p>
+              {m.role === "assistant" ? (
+                <AnswerText
+                  content={m.content}
+                  sources={m.sources}
+                  onOpenThread={onOpenThread}
+                />
+              ) : (
+                <p className="prewrap">{m.content}</p>
+              )}
               {m.sources && m.sources.length > 0 && (
                 <div className="mt-3 space-y-1.5 border-t border-gray-200 pt-2">
                   <p className="text-[11px] font-semibold text-gray-500">Sources</p>
@@ -123,13 +165,17 @@ export default function ChatPanel({
                     <button
                       key={s.message_id}
                       onClick={() => onOpenThread(s.thread_id)}
-                      className="block w-full rounded-md bg-white px-2 py-1.5 text-left text-xs text-gray-700 ring-1 ring-gray-200 transition hover:ring-brand-300"
+                      className="flex w-full items-start gap-2 rounded-md bg-white px-2 py-1.5 text-left text-xs text-gray-700 ring-1 ring-gray-200 transition hover:ring-brand-300"
                     >
-                      <span className="font-medium text-brand-700">[S{idx + 1}]</span>{" "}
-                      {s.subject || "(no subject)"}
-                      <span className="block text-[11px] text-[var(--muted)]">
-                        {s.from}
-                        {s.date ? ` · ${new Date(s.date).toLocaleDateString()}` : ""}
+                      <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[10px] font-semibold text-brand-700">
+                        {idx + 1}
+                      </span>
+                      <span className="min-w-0">
+                        {s.subject || "(no subject)"}
+                        <span className="block text-[11px] text-[var(--muted)]">
+                          {s.from}
+                          {s.date ? ` · ${new Date(s.date).toLocaleDateString()}` : ""}
+                        </span>
                       </span>
                     </button>
                   ))}
