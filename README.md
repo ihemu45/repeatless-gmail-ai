@@ -4,6 +4,8 @@ A web app that connects to your Gmail, syncs and understands your inbox, and
 gives you an AI assistant that summarizes, categorizes, drafts, and answers
 questions grounded **only** in your own emails — with sources cited.
 
+🔗 **Live demo:** https://repeatless-gmail-ai.vercel.app
+
 > Built for the Repeatless "AI Automation Executive" technical assessment.
 > Design rationale lives in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 > Step-by-step credential setup lives in [`SETUP.md`](SETUP.md).
