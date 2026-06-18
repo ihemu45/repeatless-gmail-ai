@@ -13,8 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    // suppressHydrationWarning: browser extensions (e.g. Grammarly) inject
+    // attributes onto <body> before hydration; this prevents a false-positive
+    // hydration mismatch warning in dev.
     <html lang="en">
-      <body>{children}</body>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
