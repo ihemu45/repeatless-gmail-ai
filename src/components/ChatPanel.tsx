@@ -101,20 +101,22 @@ export default function ChatPanel({
   if (!open) return null;
 
   return (
-    <div className="surface flex w-[420px] shrink-0 flex-col border-l border-[var(--border)]">
-      <div className="flex items-center justify-between border-b border-[var(--border)] bg-gradient-to-r from-brand-50 to-violet-50 px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <span className="brand-gradient flex h-8 w-8 items-center justify-center rounded-xl text-sm shadow-[0_6px_16px_-8px_rgba(79,70,229,.7)]">
+    <div className="surface flex w-[420px] shrink-0 flex-col border-l border-[var(--line)]">
+      <div className="flex items-center justify-between border-b border-[var(--line)] px-5 py-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--line-2)] bg-[var(--panel)] text-[var(--accent)] shadow-[var(--shadow-sm)]">
             ✨
           </span>
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">AI Assistant</h2>
-            <p className="text-[11px] text-[var(--muted)]">Answers only from your emails</p>
+            <h2 className="font-display text-[16px] font-semibold text-[var(--ink)]">
+              AI Assistant
+            </h2>
+            <p className="text-[11px] text-[var(--ink-3)]">Answers only from your emails</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="rounded-lg px-2 py-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+          className="rounded-lg px-2 py-1 text-[var(--ink-4)] hover:bg-[#f2ece2] hover:text-[var(--ink-2)]"
         >
           ✕
         </button>

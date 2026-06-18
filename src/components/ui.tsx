@@ -7,18 +7,19 @@ export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }
 
-/** Colour + emoji per category, used in the sidebar and on thread rows. */
+/** Soft, warm per-category palette: chip background/foreground + a dot colour
+ * used in the sidebar nav. Matches the warm editorial design. */
 export const CATEGORY_STYLE: Record<
   EmailCategory,
-  { dot: string; chip: string; icon: string }
+  { chipBg: string; chipFg: string; dot: string }
 > = {
-  newsletters: { dot: "bg-amber-400", chip: "bg-amber-50 text-amber-700", icon: "📰" },
-  job: { dot: "bg-emerald-400", chip: "bg-emerald-50 text-emerald-700", icon: "💼" },
-  finance: { dot: "bg-sky-400", chip: "bg-sky-50 text-sky-700", icon: "💳" },
-  notifications: { dot: "bg-violet-400", chip: "bg-violet-50 text-violet-700", icon: "🔔" },
-  personal: { dot: "bg-rose-400", chip: "bg-rose-50 text-rose-700", icon: "👤" },
-  work: { dot: "bg-indigo-400", chip: "bg-indigo-50 text-indigo-700", icon: "🗂️" },
-  other: { dot: "bg-gray-300", chip: "bg-gray-100 text-gray-600", icon: "✉️" },
+  newsletters: { chipBg: "#E9F0FA", chipFg: "#2D5896", dot: "#3C76C9" },
+  job: { chipBg: "#F3E9F6", chipFg: "#7E3E94", dot: "#8A52A8" },
+  finance: { chipBg: "#E7F2EC", chipFg: "#2C6B4A", dot: "#3B8C63" },
+  notifications: { chipBg: "#FBEEDD", chipFg: "#9A6112", dot: "#E0892B" },
+  personal: { chipBg: "#FBEAEA", chipFg: "#A23F3A", dot: "#C5544A" },
+  work: { chipBg: "#E6F4F4", chipFg: "#1E6E6E", dot: "#1E9E9E" },
+  other: { chipBg: "#F0EDE7", chipFg: "#6B6258", dot: "#A8A096" },
 };
 
 export function CategoryChip({ category }: { category: EmailCategory | null }) {
@@ -26,12 +27,13 @@ export function CategoryChip({ category }: { category: EmailCategory | null }) {
   const style = CATEGORY_STYLE[category];
   return (
     <span
-      className={cx(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
-        style.chip,
-      )}
+      className="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[10.5px] font-semibold"
+      style={{ background: style.chipBg, color: style.chipFg }}
     >
-      <span>{style.icon}</span>
+      <span
+        className="h-[5px] w-[5px] rounded-full"
+        style={{ background: style.chipFg }}
+      />
       {CATEGORY_LABELS[category]}
     </span>
   );
@@ -78,20 +80,20 @@ export function initials(name: string | null, email: string | null): string {
   return source.slice(0, 2).toUpperCase();
 }
 
-/** Deterministic vibrant gradient per sender, for colorful avatars. */
-const AVATAR_GRADIENTS = [
-  "linear-gradient(135deg,#6366f1,#8b5cf6)",
-  "linear-gradient(135deg,#ec4899,#f43f5e)",
-  "linear-gradient(135deg,#06b6d4,#3b82f6)",
-  "linear-gradient(135deg,#10b981,#14b8a6)",
-  "linear-gradient(135deg,#f59e0b,#ef4444)",
-  "linear-gradient(135deg,#8b5cf6,#d946ef)",
-  "linear-gradient(135deg,#0ea5e9,#6366f1)",
-  "linear-gradient(135deg,#f97316,#f59e0b)",
+/** Deterministic muted solid colour per sender, for tasteful avatars. */
+const AVATAR_COLORS = [
+  "#3B8C63",
+  "#E0892B",
+  "#3C76C9",
+  "#C5544A",
+  "#1E9E9E",
+  "#8A52A8",
+  "#B5824A",
+  "#5B6CC0",
 ];
 
-export function avatarGradient(seed: string): string {
+export function avatarColor(seed: string): string {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return AVATAR_GRADIENTS[h % AVATAR_GRADIENTS.length];
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
 }

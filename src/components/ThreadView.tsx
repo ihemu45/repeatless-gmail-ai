@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { MessageRow, ThreadRow } from "@/lib/types";
 import { api } from "@/lib/client";
-import { CategoryChip, Spinner, avatarGradient, cx, initials } from "./ui";
+import { CategoryChip, Spinner, avatarColor, cx, initials } from "./ui";
 
 interface ThreadViewProps {
   thread: ThreadRow | null;
@@ -31,14 +31,14 @@ export default function ThreadView(props: ThreadViewProps) {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="surface border-b border-[var(--border)] px-6 py-4">
-        <div className="mb-1 flex items-center gap-2">
-          <h1 className="text-lg font-semibold text-gray-900">
+      <div className="surface border-b border-[var(--line)] px-6 py-4">
+        <div className="mb-1 flex items-center gap-2.5">
+          <h1 className="font-display text-xl font-semibold text-[var(--ink)]">
             {props.thread.subject || "(no subject)"}
           </h1>
           <CategoryChip category={props.thread.category} />
         </div>
-        <p className="text-xs text-[var(--muted)]">
+        <p className="text-xs text-[var(--ink-4)]">
           {props.messages.length} message{props.messages.length === 1 ? "" : "s"}
         </p>
       </div>
@@ -46,11 +46,11 @@ export default function ThreadView(props: ThreadViewProps) {
       <div className="flex-1 overflow-y-auto px-6 py-5 scroll-thin">
         {/* Thread-level AI summary */}
         {props.thread.summary && (
-          <div className="mb-5 rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-violet-50 p-4 shadow-[0_10px_28px_-20px_rgba(79,70,229,.5)]">
-            <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-brand-700">
+          <div className="card mb-5 p-4">
+            <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[var(--accent)]">
               ✨ Thread summary
             </div>
-            <p className="prewrap text-sm leading-relaxed text-gray-700">
+            <p className="prewrap text-sm leading-relaxed text-[var(--ink-2)]">
               {props.thread.summary}
             </p>
           </div>
@@ -76,8 +76,8 @@ function MessageCard({ message }: { message: MessageRow }) {
     <div className="card lift mb-3 p-4">
       <div className="mb-2 flex items-center gap-3">
         <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm"
-          style={{ backgroundImage: avatarGradient(message.from_email || message.from_name || "?") }}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+          style={{ backgroundColor: avatarColor(message.from_email || message.from_name || "?") }}
         >
           {initials(message.from_name, message.from_email)}
         </div>

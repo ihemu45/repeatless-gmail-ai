@@ -1,7 +1,7 @@
 "use client";
 
 import type { ThreadRow } from "@/lib/types";
-import { CategoryChip, Spinner, avatarGradient, cx, initials, relativeTime } from "./ui";
+import { CategoryChip, Spinner, avatarColor, cx, initials, relativeTime } from "./ui";
 
 interface ThreadListProps {
   threads: ThreadRow[];
@@ -15,11 +15,13 @@ interface ThreadListProps {
 
 export default function ThreadList(props: ThreadListProps) {
   return (
-    <div className="surface flex w-[380px] shrink-0 flex-col border-r border-[var(--border)]">
-      <div className="border-b border-[var(--border)] p-3">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold tracking-tight">{props.title}</h2>
-          {props.loading && <Spinner className="text-gray-400" />}
+    <div className="panel-white flex w-[380px] shrink-0 flex-col border-r border-[var(--line)]">
+      <div className="border-b border-[var(--line)] px-4 py-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-display text-[19px] font-semibold text-[var(--ink)]">
+            {props.title}
+          </h2>
+          {props.loading && <Spinner className="text-[var(--ink-4)]" />}
         </div>
         <input
           value={props.query}
@@ -47,15 +49,15 @@ export default function ThreadList(props: ThreadListProps) {
               key={t.id}
               onClick={() => props.onSelect(t.id)}
               className={cx(
-                "lift flex w-full gap-3 rounded-xl px-3 py-2.5 text-left",
+                "lift flex w-full gap-3 rounded-2xl px-3 py-3 text-left",
                 selected
-                  ? "bg-white/80 shadow-[0_1px_2px_rgba(16,24,40,.05),0_12px_28px_-18px_rgba(67,56,202,.4)] ring-1 ring-brand-200"
-                  : "hover:bg-white/55",
+                  ? "bg-[var(--accent-soft)] ring-1 ring-[#dad7f4] shadow-[var(--shadow-sm)]"
+                  : "hover:bg-[var(--panel-soft)]",
               )}
             >
               <div
-                className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white shadow-sm"
-                style={{ backgroundImage: avatarGradient(lead?.email || who) }}
+                className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white"
+                style={{ backgroundColor: avatarColor(lead?.email || who) }}
               >
                 {initials(lead?.name ?? null, lead?.email ?? who)}
               </div>

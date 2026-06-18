@@ -16,12 +16,14 @@ export default async function LandingPage({
       <div className="w-full max-w-xl animate-rise">
         <div className="card p-10">
           <div className="mb-6 flex items-center gap-3.5">
-            <div className="brand-gradient flex h-12 w-12 items-center justify-center rounded-2xl text-xl shadow-[0_8px_20px_-8px_rgba(79,70,229,.6)]">
-              📬
+            <div className="brand-gradient flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-[0_6px_16px_-6px_rgba(67,56,202,.5)]">
+              <span className="font-display text-2xl font-semibold leading-none">R</span>
             </div>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Repeatless Mail</h1>
-              <p className="text-sm text-[var(--muted)]">AI Gmail Intelligence Platform</p>
+              <h1 className="font-display text-2xl font-semibold text-[var(--ink)]">
+                Repeatless Mail
+              </h1>
+              <p className="text-sm text-[var(--ink-3)]">AI Gmail Intelligence Platform</p>
             </div>
           </div>
 
@@ -29,10 +31,8 @@ export default async function LandingPage({
             Connect your Gmail to sync your inbox, auto-summarize and categorize every
             thread, draft replies from a one-line prompt, and ask an AI assistant questions
             answered{" "}
-            <span className="bg-gradient-to-r from-brand-600 to-violet-600 bg-clip-text font-semibold text-transparent">
-              only
-            </span>{" "}
-            from your own emails — with sources cited.
+            <span className="font-semibold text-[var(--accent)]">only</span> from your own
+            emails — with sources cited.
           </p>
 
           {error && (

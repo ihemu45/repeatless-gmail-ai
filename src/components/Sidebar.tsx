@@ -20,52 +20,56 @@ interface SidebarProps {
 }
 
 export default function Sidebar(props: SidebarProps) {
-  const rows: Array<{ key: string; label: string; dot?: string; icon?: string }> = [
-    { key: "all", label: "All mail", icon: "📥" },
+  const rows: Array<{ key: string; label: string; dot: string }> = [
+    { key: "all", label: "All mail", dot: "var(--accent)" },
     ...EMAIL_CATEGORIES.map((c) => ({
       key: c,
       label: CATEGORY_LABELS[c],
       dot: CATEGORY_STYLE[c].dot,
-      icon: CATEGORY_STYLE[c].icon,
     })),
   ];
 
   return (
-    <aside className="surface flex w-64 shrink-0 flex-col border-r border-[var(--border)]">
-      <div className="flex items-center gap-2.5 px-4 py-4">
-        <div className="brand-gradient flex h-9 w-9 items-center justify-center rounded-xl text-sm shadow-[0_6px_16px_-8px_rgba(79,70,229,.7)]">
-          📬
+    <aside className="surface flex w-64 shrink-0 flex-col border-r border-[var(--line)]">
+      <div className="flex items-center gap-2.5 px-4 py-5">
+        <div className="brand-gradient flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-[0_4px_10px_rgba(67,56,202,.28)]">
+          <span className="font-display text-lg font-semibold leading-none">R</span>
         </div>
-        <span className="font-semibold tracking-tight">Repeatless Mail</span>
+        <span className="font-display text-[17px] font-semibold leading-tight text-[var(--ink)]">
+          Repeatless Mail
+        </span>
       </div>
 
-      <div className="px-3">
+      <div className="flex flex-col gap-2 px-3">
         <button
           onClick={props.onCompose}
-          className="btn-primary mb-2 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium"
+          className="btn-primary flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold"
         >
           ✏️ Compose
         </button>
         <button
           onClick={props.onToggleChat}
           className={cx(
-            "mb-2 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition",
+            "flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition",
             props.chatOpen
-              ? "bg-brand-100 text-brand-700 ring-1 ring-brand-200"
-              : "btn-soft text-gray-700",
+              ? "bg-[var(--accent-soft)] text-[var(--accent-deep)] ring-1 ring-[#dad7f4]"
+              : "btn-soft text-[var(--ink-2)]",
           )}
         >
           ✨ Ask AI
         </button>
         <button
           onClick={props.onOpenNews}
-          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700"
+          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-[var(--ink-2)]"
         >
           📰 News digest
         </button>
       </div>
 
-      <nav className="mt-4 flex-1 overflow-y-auto px-3 scroll-thin">
+      <div className="mt-5 px-5 pb-2 text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--ink-4)]">
+        Categories
+      </div>
+      <nav className="flex-1 overflow-y-auto px-3 scroll-thin">
         {rows.map((r) => {
           const active = props.activeCategory === r.key;
           const count = props.counts[r.key];
@@ -74,21 +78,22 @@ export default function Sidebar(props: SidebarProps) {
               key={r.key}
               onClick={() => props.onSelectCategory(r.key)}
               className={cx(
-                "lift mb-0.5 flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm",
+                "mb-0.5 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-[13.5px] transition",
                 active
-                  ? "bg-gradient-to-r from-brand-50 to-violet-50 font-semibold text-brand-700 ring-1 ring-brand-100"
-                  : "text-gray-700 hover:bg-white/70",
+                  ? "bg-[var(--accent-soft)] font-semibold text-[var(--accent-deep)]"
+                  : "font-medium text-[var(--ink-2)] hover:bg-[#f2ece2]",
               )}
             >
-              <span className="flex items-center gap-2">
-                <span className="w-4 text-center">{r.icon}</span>
-                {r.label}
-              </span>
+              <span
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{ background: r.dot }}
+              />
+              <span className="flex-1 truncate text-left">{r.label}</span>
               {typeof count === "number" && count > 0 && (
                 <span
                   className={cx(
-                    "rounded-full px-1.5 text-[11px] tabular-nums",
-                    active ? "bg-white/70 text-brand-700" : "text-[var(--muted)]",
+                    "text-[11.5px] font-semibold tabular-nums",
+                    active ? "text-[var(--accent)]" : "text-[var(--ink-4)]",
                   )}
                 >
                   {count}
@@ -100,17 +105,17 @@ export default function Sidebar(props: SidebarProps) {
       </nav>
 
       {/* Sync status */}
-      <div className="border-t border-[var(--border)] p-3">
+      <div className="border-t border-[var(--line)] p-3">
         <button
           onClick={props.onSync}
           disabled={props.syncing}
-          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
+          className="btn-soft flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-[var(--ink-2)] disabled:opacity-60"
         >
-          {props.syncing ? <Spinner className="text-gray-500" /> : "🔄"}
+          {props.syncing ? <Spinner className="text-[var(--ink-3)]" /> : "🔄"}
           {props.syncing ? "Syncing…" : "Sync inbox"}
         </button>
         {props.syncMessage && (
-          <p className="mt-2 text-center text-[11px] leading-tight text-[var(--muted)]">
+          <p className="mt-2 text-center text-[11px] leading-tight text-[var(--ink-4)]">
             {props.syncMessage}
           </p>
         )}
@@ -122,13 +127,13 @@ export default function Sidebar(props: SidebarProps) {
       </div>
 
       {/* Account */}
-      <div className="flex items-center justify-between border-t border-[var(--border)] px-4 py-3">
-        <span className="truncate text-xs text-[var(--muted)]" title={props.email}>
+      <div className="flex items-center justify-between border-t border-[var(--line)] px-4 py-3">
+        <span className="truncate text-xs text-[var(--ink-3)]" title={props.email}>
           {props.email}
         </span>
         <a
           href="/api/auth/logout"
-          className="ml-2 shrink-0 text-xs text-gray-500 underline hover:text-gray-800"
+          className="ml-2 shrink-0 text-xs font-semibold text-[var(--accent)] hover:underline"
         >
           Sign out
         </a>

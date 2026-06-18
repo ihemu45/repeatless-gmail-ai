@@ -1,24 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
+  --color-brand-50: #eeedfb;
+  --color-brand-100: #e0def7;
+  --color-brand-200: #c7c3ef;
+  --color-brand-300: #a8a2e4;
+  --color-brand-400: #847cd6;
+  --color-brand-500: #5b50c9;
+  --color-brand-600: #4338ca;
+  --color-brand-700: #372eab;
 }
 
 :root {
-  --bg: #eef0fa;
-  --border: rgba(99, 102, 241, 0.12);
-  --border-strong: rgba(79, 70, 229, 0.22);
-  --text: #15151f;
-  --muted: #6b7280;
-  --brand-600: #4f46e5;
-  --brand-grad-end: #8b5cf6;
+  --canvas: #faf7f2;
+  --panel: #ffffff;
+  --panel-soft: #fbf9f5;
+  --ink: #23201b;
+  --ink-2: #524d45;
+  --ink-3: #8a8278;
+  --ink-4: #a8a096;
+  --line: #ebe5dc;
+  --line-2: #e2dace;
+  --accent: #4338ca;
+  --accent-soft: #eeedfb;
+  --accent-deep: #372eab;
+  --shadow-sm: 0 1px 2px rgba(53, 45, 33, 0.04), 0 1px 3px rgba(53, 45, 33, 0.06);
+  --shadow-md: 0 4px 16px rgba(53, 45, 33, 0.06), 0 1px 4px rgba(53, 45, 33, 0.05);
+  --shadow-lg: 0 12px 34px rgba(53, 45, 33, 0.1), 0 3px 10px rgba(53, 45, 33, 0.05);
+
+  /* soft category chip palette */
+  --border: var(--line);
+  --border-strong: var(--line-2);
+  --muted: var(--ink-3);
+  --text: var(--ink);
 }
 
 html,
@@ -27,94 +41,74 @@ body {
 }
 
 body {
-  /* Vibrant-but-tasteful gradient mesh that shows through the frosted panels. */
-  background:
-    radial-gradient(900px 520px at 4% -8%, rgba(99, 102, 241, 0.20), transparent 55%),
-    radial-gradient(820px 480px at 100% 0%, rgba(139, 92, 246, 0.18), transparent 52%),
-    radial-gradient(760px 520px at 50% 112%, rgba(236, 72, 153, 0.10), transparent 55%),
-    linear-gradient(180deg, #f5f6fc 0%, #eaecf8 100%);
-  background-attachment: fixed;
-  color: var(--text);
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.006em;
 }
 
-/* ---- Frosted glass surfaces -------------------------------------------- */
+/* Serif display face for brand + headings */
+.font-display {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  letter-spacing: -0.01em;
+}
 
+/* ---- Surfaces ----------------------------------------------------------- */
 .surface {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background: var(--canvas);
+}
+.panel-white {
+  background: var(--panel);
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
-  border-radius: 1rem;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 1px 2px rgba(16, 24, 40, 0.04),
-    0 20px 44px -24px rgba(67, 56, 202, 0.34);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
 }
 
 /* ---- Controls ----------------------------------------------------------- */
-
 .btn-primary {
-  background: linear-gradient(135deg, var(--brand-600), var(--brand-grad-end));
+  background: var(--accent);
   color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 10px 22px -8px rgba(79, 70, 229, 0.6);
-  transition:
-    transform 0.15s ease,
-    filter 0.15s ease,
-    box-shadow 0.15s ease;
+  box-shadow: 0 5px 14px rgba(67, 56, 202, 0.26);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 .btn-primary:hover {
-  filter: brightness(1.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 14px 30px -8px rgba(79, 70, 229, 0.7);
+  background: var(--accent-deep);
 }
 .btn-primary:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 .btn-primary:disabled {
-  filter: grayscale(0.25) opacity(0.55);
+  background: var(--ink-4);
   box-shadow: none;
 }
 
 .btn-soft {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(79, 70, 229, 0.16);
-  backdrop-filter: blur(8px);
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 .btn-soft:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: var(--color-brand-300);
+  background: #fff;
+  border-color: #d8cfc2;
 }
 .btn-soft:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 
-/* Gradient brand accent for logos / fills */
+/* Solid brand fill (logo marks, avatars, user bubble) */
 .brand-gradient {
-  background: linear-gradient(135deg, var(--brand-600), var(--brand-grad-end));
+  background: var(--accent);
 }
 
-/* Hover lift for rows / cards */
 .lift {
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    background 0.16s ease;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
 }
 .lift:hover {
   transform: translateY(-1px);
@@ -122,43 +116,42 @@ body {
 
 /* Inputs */
 .field {
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid var(--border-strong);
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
+  background: var(--panel-soft);
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.field::placeholder {
+  color: var(--ink-4);
 }
 .field:focus {
   outline: none;
   background: #fff;
-  border-color: var(--color-brand-400);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.12);
 }
 
-/* Thin, unobtrusive scrollbars for the panes. */
+/* Scrollbars */
 .scroll-thin::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 .scroll-thin::-webkit-scrollbar-thumb {
-  background: rgba(79, 70, 229, 0.22);
+  background: #e0d8cb;
   border-radius: 8px;
 }
 .scroll-thin::-webkit-scrollbar-thumb:hover {
-  background: rgba(79, 70, 229, 0.34);
+  background: #d3c9b9;
 }
 .scroll-thin::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Render newlines in stored plain-text bodies / AI answers. */
 .prewrap {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* Entrance animation for chat bubbles / cards */
 @keyframes rise {
   from {
     opacity: 0;
