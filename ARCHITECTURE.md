@@ -129,8 +129,9 @@ Full DDL: [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sq
 ### pgvector usage
 
 We embed **email content chunks** (subject + sender + body, split into
-overlapping ~1200-char chunks) with Gemini `text-embedding-004` (768 dims). This
-is what the chat agent searches. Retrieval is exposed as a SQL function
+overlapping ~1200-char chunks) with Gemini `gemini-embedding-001` at **768
+dimensions** (the GA replacement for the deprecated `text-embedding-004`). This
+is what the chat agent's vector stage searches. Retrieval is exposed as a SQL function
 `match_email_chunks(query_embedding, user_id, k, threshold)` returning cosine
 similarity, called via `supabase.rpc()` — keeping the vector math in Postgres
 where the HNSW index lives.
@@ -159,22 +160,35 @@ service role bypasses RLS so application queries work unchanged.
   context window. Thread summaries are cached and regenerated only when newer
   messages arrive (`summary_updated_at < last_message_at`).
 
-### RAG pipeline (the chat agent)
+### Hybrid RAG pipeline (the chat agent)
 
-1. **Query rewriting** — for follow-ups, recent history is used to rewrite the
-   question into a standalone query, so "list them all" retrieves correctly.
-2. **Embed** the query with Gemini (`RETRIEVAL_QUERY` task type).
-3. **Retrieve** top-20 chunks via `match_email_chunks` (cosine, HNSW), scoped to
-   the user.
-4. **Re-rank** the candidates with the NIM model for precision, with a fallback
-   to vector order if reranking fails (never lose recall).
-5. **Build context**: chunks are grouped per email into numbered sources
-   `[S1], [S2], …`, each tagged with sender/subject/date.
-6. **Generate** with Gemini under a strict system prompt: answer **only** from
-   the excerpts, cite sources inline, synthesize across emails, and say "I don't
-   have that in your emails" when the answer isn't present.
-7. **Attribute**: we return the structured source list to the UI and keep the
-   sources the model actually cited (`[S#]` present in the answer).
+Pure vector top-K can't satisfy the spec's example queries — sender filters
+("from Acme Corp"), time windows ("this month", "past 4 days"), and **exhaustive**
+listing ("which companies rejected me — list them all"). So retrieval is
+**hybrid**:
+
+1. **Intent extraction** — resolve follow-ups to a standalone query (NIM), then
+   parse structured slots **deterministically in code** (no model, so it's
+   accurate and quota-independent): `sender`, `category`, a relative **date
+   range** ("past 4 days" → absolute bounds), and an **exhaustive** flag.
+2. **Structured fetch** — when slots are present, query the `messages` table
+   directly (`from_*` ILIKE, `category =`, `internal_date` between) for the
+   **complete** matching set (sender wins over category to avoid over-narrowing).
+   This is what makes filtered and "list them all" queries answerable in full.
+3. **Vector search** — embed the standalone query (Gemini `RETRIEVAL_QUERY`) and
+   run cosine kNN over `email_chunks` (`match_email_chunks`, HNSW) for topical
+   queries; **re-ranked** by NIM (fallback to vector order).
+4. **Thread expansion** — collect the threads of the focus messages and load
+   **every** message in them, so the agent reasons over entire threads (threads
+   as a first-class unit), not just the individually-similar chunks.
+5. **Context assembly** — group by thread, tag each email as a numbered source
+   `[S1], [S2], …` (sender/subject/date), and pack within a char budget (full
+   bodies when there's room, per-message summaries when listing many).
+6. **Generate** — Gemini (NIM fallback) answers using **only** the context, with
+   a scope note for filtered queries ("the complete set of N emails matching …"),
+   cites `[S#]`, synthesizes across emails, and refuses when the answer is absent.
+7. **Attribute** — return the structured source list to the UI; keep the sources
+   the model actually cited.
 
 ### Source clarity across multiple emails
 
@@ -193,6 +207,8 @@ work where an 8B instruct model is the right size:
 - **Categorization** — one classification call per message; cheap, deterministic
   (temp 0), JSON-constrained.
 - **RAG re-ranking** — scoring/ordering retrieved passages for relevance.
+- **Follow-up rewriting** — turning a conversational follow-up into a standalone
+  query (the only model step in intent extraction; the rest is deterministic).
 - **Answer-generation fallback** — if Gemini is rate-limited (free-tier quota),
   the chat agent falls back to NIM to generate the grounded, cited answer. NIM
   has a separate quota, so the assistant stays available; this also exercises
