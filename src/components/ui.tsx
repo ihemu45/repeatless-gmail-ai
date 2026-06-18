@@ -77,3 +77,21 @@ export function initials(name: string | null, email: string | null): string {
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return source.slice(0, 2).toUpperCase();
 }
+
+/** Deterministic vibrant gradient per sender, for colorful avatars. */
+const AVATAR_GRADIENTS = [
+  "linear-gradient(135deg,#6366f1,#8b5cf6)",
+  "linear-gradient(135deg,#ec4899,#f43f5e)",
+  "linear-gradient(135deg,#06b6d4,#3b82f6)",
+  "linear-gradient(135deg,#10b981,#14b8a6)",
+  "linear-gradient(135deg,#f59e0b,#ef4444)",
+  "linear-gradient(135deg,#8b5cf6,#d946ef)",
+  "linear-gradient(135deg,#0ea5e9,#6366f1)",
+  "linear-gradient(135deg,#f97316,#f59e0b)",
+];
+
+export function avatarGradient(seed: string): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return AVATAR_GRADIENTS[h % AVATAR_GRADIENTS.length];
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export default function RootLayout({
     // suppressHydrationWarning: browser extensions (e.g. Grammarly) inject
     // attributes onto <body> before hydration; this prevents a false-positive
     // hydration mismatch warning in dev.
-    <html lang="en">
+    <html lang="en" className={GeistSans.className}>
       <body suppressHydrationWarning>{children}</body>
     </html>
   );

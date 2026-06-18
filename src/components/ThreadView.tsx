@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { MessageRow, ThreadRow } from "@/lib/types";
 import { api } from "@/lib/client";
-import { CategoryChip, Spinner, cx, initials } from "./ui";
+import { CategoryChip, Spinner, avatarGradient, cx, initials } from "./ui";
 
 interface ThreadViewProps {
   thread: ThreadRow | null;
@@ -30,8 +30,8 @@ export default function ThreadView(props: ThreadViewProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden bg-[var(--bg)]">
-      <div className="border-b border-[var(--border)] bg-white px-6 py-4">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="surface border-b border-[var(--border)] px-6 py-4">
         <div className="mb-1 flex items-center gap-2">
           <h1 className="text-lg font-semibold text-gray-900">
             {props.thread.subject || "(no subject)"}
@@ -75,7 +75,10 @@ function MessageCard({ message }: { message: MessageRow }) {
   return (
     <div className="card lift mb-3 p-4">
       <div className="mb-2 flex items-center gap-3">
-        <div className="brand-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white">
+        <div
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm"
+          style={{ backgroundImage: avatarGradient(message.from_email || message.from_name || "?") }}
+        >
           {initials(message.from_name, message.from_email)}
         </div>
         <div className="min-w-0 flex-1">
@@ -152,7 +155,7 @@ function ReplyComposer({ threadId, onSent }: { threadId: string; onSent: () => v
   }
 
   return (
-    <div className="border-t border-[var(--border)] bg-white p-4">
+    <div className="surface border-t border-[var(--border)] p-4">
       {done && (
         <div className="mb-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           ✓ Reply sent.
@@ -170,7 +173,7 @@ function ReplyComposer({ threadId, onSent }: { threadId: string; onSent: () => v
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generate()}
           placeholder='Tell AI how to reply — e.g. "politely decline and suggest next week"'
-          className="flex-1 rounded-lg border border-[var(--border)] bg-gray-50 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:bg-white"
+          className="field flex-1 rounded-xl px-3 py-2 text-sm"
         />
         <button
           onClick={generate}
@@ -187,7 +190,7 @@ function ReplyComposer({ threadId, onSent }: { threadId: string; onSent: () => v
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={8}
-            className="w-full rounded-lg border border-[var(--border)] p-3 text-sm leading-relaxed outline-none focus:border-brand-500 prewrap"
+            className="field prewrap w-full rounded-xl p-3 text-sm leading-relaxed"
           />
           <div className="mt-2 flex items-center justify-end gap-2">
             <button

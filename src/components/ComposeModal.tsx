@@ -84,7 +84,7 @@ export default function ComposeModal({ onClose }: { onClose: () => void }) {
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && generate()}
                 placeholder='e.g. "Follow up with the product team about the Q3 launch delay"'
-                className="flex-1 rounded-lg border border-[var(--border)] bg-gray-50 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:bg-white"
+                className="field flex-1 rounded-xl px-3 py-2 text-sm"
               />
               <button
                 onClick={generate}
@@ -101,20 +101,20 @@ export default function ComposeModal({ onClose }: { onClose: () => void }) {
               value={to}
               onChange={(e) => setTo(e.target.value)}
               placeholder="To (comma-separated)"
-              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-brand-500"
+              className="field w-full rounded-xl px-3 py-2 text-sm"
             />
             <input
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Subject"
-              className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-brand-500"
+              className="field w-full rounded-xl px-3 py-2 text-sm"
             />
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={12}
               placeholder="Body — generate with AI above, or write your own…"
-              className="w-full rounded-lg border border-[var(--border)] p-3 text-sm leading-relaxed outline-none focus:border-brand-500 prewrap"
+              className="field prewrap w-full rounded-xl p-3 text-sm leading-relaxed"
             />
           </div>
         </div>

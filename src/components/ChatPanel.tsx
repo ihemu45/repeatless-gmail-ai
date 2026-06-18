@@ -207,7 +207,7 @@ export default function ChatPanel({
             }}
             rows={1}
             placeholder="Ask about your emails…"
-            className="flex-1 resize-none rounded-lg border border-[var(--border)] bg-gray-50 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:bg-white"
+            className="field flex-1 resize-none rounded-xl px-3 py-2 text-sm"
           />
           <button
             onClick={() => ask(input)}
