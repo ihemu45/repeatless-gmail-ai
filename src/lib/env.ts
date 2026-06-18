@@ -52,7 +52,10 @@ export const env = {
     return required("GEMINI_API_KEY");
   },
   get geminiModel() {
-    return optional("GEMINI_MODEL", "gemini-2.5-flash");
+    // flash-lite has a far more generous free-tier daily quota, which matters
+    // because the app makes one generation call per email. Bump to gemini-2.5-flash
+    // (higher quality) once billing is enabled.
+    return optional("GEMINI_MODEL", "gemini-2.5-flash-lite");
   },
   get geminiEmbedModel() {
     return optional("GEMINI_EMBED_MODEL", "gemini-embedding-001");
